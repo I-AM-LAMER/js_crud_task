@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  postgres:
+    image: 'postgres:15.5'
+    env_file: .env
+    ports:
+      - 9000:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway" 
+    networks:
+      - app
+  migrator:
+    image: 'ghcr.io/amacneil/dbmate:2.12'
+    command: -u "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_INNER_HOST}:${POSTGRES_INNER_PORT}/${POSTGRES_DB}?sslmode=disable" up
+    volumes:
+      - ./migrations:/db/migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app
+  web:    
+    build: ./modules
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+    ports:      
+      - '5000:5000'
+    volumes:     
+      - ./modules:/app    
+      - /app/node_modules 
+    networks:
+      - app
+networks:
+  app:
