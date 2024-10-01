@@ -1,6 +1,7 @@
 export default class classmate 
 {
-    constructor(name) {
+    constructor(name, id) {
+        this.id = id
         this.name = name;
         this.money = 0;
         this.supplies = []

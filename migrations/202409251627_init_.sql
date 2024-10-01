@@ -5,14 +5,14 @@ create extension if not exists "uuid-ossp";
 create table classmate
 (
 	id uuid primary key default uuid_generate_v4(),
-	classmate_name varchar(100),
-    class varchar(10)
+	name varchar(100),
+    money int
 );
 
 create table cafeteria
 (
 	id uuid primary key default uuid_generate_v4(),
-	cafeteria_name varchar(30),
+	name varchar(30),
     opening_time varchar(10),
     closing_time varchar(10)
 );
@@ -20,7 +20,7 @@ create table cafeteria
 create table product
 (
 	id uuid primary key default uuid_generate_v4(),
-	product_name varchar(30),
+	name varchar(30),
 	quantity int
 );
 

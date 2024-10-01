@@ -35,10 +35,9 @@ services:
     env_file:
       - .env
     ports:      
-      - '5000:5000'
+      - 5000:5000
     volumes:     
-      - ./modules:/app    
-      - /app/node_modules 
+      - ./modules/main.js:/modules/main.js
     networks:
       - app
 networks:

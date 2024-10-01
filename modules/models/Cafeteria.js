@@ -1,9 +1,10 @@
-import { Validators } from "./assist.js";
+import { Validators } from "../assist.js";
 
 export default class cafeteria
 {
-    constructor()
+    constructor(id)
     {
+        this.id = id
         this.catalog = [];
         this.worktime = {
             "start": "9:00",

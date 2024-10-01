@@ -4,10 +4,10 @@ WORKDIR /modules
 
 COPY package.json .
 
-RUN npm install express pg-promise cors dotenv ejs
+RUN npm install express pg-promise cors dotenv ejs nodemon
 
 COPY . .
 
 EXPOSE 5000
 
-CMD ["node", "main.js"]
+CMD ["npm", "start"]

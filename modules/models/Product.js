@@ -1,8 +1,9 @@
-import { Validators } from "./assist.js";
+import { Validators } from "../assist.js";
 
 export default class product
 {
-    constructor(name, price){
+    constructor(name, price, id){
+        this.id = id
         this.name = name;
         try
         {

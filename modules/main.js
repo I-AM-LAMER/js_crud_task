@@ -1,18 +1,6 @@
 import express from 'express';
-import cors from 'cors';
-import product from './Product.js';
-import classmate from './Classmate.js';
-import cafeteria from './Cafeteria.js';
+import router from './routers/routes.js';
 import pgPromise from 'pg-promise';
-import { Serializers } from './assist.js'
-
-
-const app = express();
-const PORT = process.env.WEB_PORT;
-const pgp = pgPromise({});
-
-app.set('view engine', 'ejs');
-console.log(process.env)
 
 const connection = {
     host: process.env.POSTGRES_INNER_HOST,
@@ -22,48 +10,18 @@ const connection = {
     password: process.env.POSTGRES_PASSWORD
 };
 
+const pgp = pgPromise({});
+
 const db = pgp(connection);
 
-app.use(cors());
-app.use(express.json())
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.get('/', async (req, res) => {
+app.set('view engine', 'ejs');
 
-    const classmates = await Serializers.querySerializer(classmate, db)
-    const cafeterias = await Serializers.querySerializer(cafeteria, db)
-    const products = await Serializers.querySerializer(product, db)
+app.use(express.json());
+app.use('/', router);
 
-    res.render('templates/index.ejs', {
-        classmates,
-        cafeterias,
-        products,
-        title: 'Classmate Cafe Management System',
-        message: 'Welcome to our management system!'
-    });
-})
+app.listen(PORT, () => console.log(`Server running on: http://localhost:${PORT}`));
 
-app.get('/classmates', async (req, res) => {
-    try {
-        const classmates = await db.any('SELECT * FROM classmate');
-        res.send(classmates)
-    } 
-    catch(e) {
-        console.log(`ERROR: ${e}`)
-    }
-})
-
-app.get('/cafeterias', async (req, res) => {
-    try {
-        const classmates = await db.any('SELECT * FROM cafeteria');
-        res.send(classmates)
-    } 
-    catch(e) {
-        console.log(`ERROR: ${e}`)
-    }
-})
-
-app.post('/cafeteria')
-
-app.listen(PORT, () => console.log(`Server running on port: http://localhost:${PORT}`));
-
-
+export default db;
