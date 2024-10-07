@@ -2,18 +2,21 @@ import { Validators } from "../assist.js";
 
 export default class cafeteria
 {
-    constructor(id)
+    constructor({id = 'id', name = 'name', opening_time = 'time', closing_time = 'time'} = {})
     {
         this.id = id
-        this.catalog = [];
-        this.worktime = {
-            "start": "9:00",
-            "end": "17:30"
-        }
+        this.name = name
+        this.opening_time = opening_time;
+        this.closing_time = closing_time;
+        Object.defineProperty(this, 'catalog', {
+            value: [],
+            enumerable: false
+          });
     }
 
-    changeWorktime(worktime){
-        //TODO: finish when enshure in type of response
+    changeWorktime(opening_time, closing_time){
+        this.opening_time = opening_time
+        this.closing_time = closing_time
     }
 
     addToCatalog(product){

@@ -1,14 +1,21 @@
+import { Validators } from "../assist.js";
+
 export default class classmate 
 {
-    constructor(name, id) {
-        this.id = id
+    constructor({id = 'id', name = 'name', money = '0'} = {}) {
+        Validators.checkMoney(Number(money))
+        this.id = id;
         this.name = name;
-        this.money = 0;
-        this.supplies = []
+        this.money = money;
+        Object.defineProperty(this, 'supplies', {
+            value: [],
+            enumerable: false
+          });
     }
 
     addMoney(money) {
-        this.money += money;
+        Validators.checkMoney(money)
+        this.money = (Number(this.money) + Number(money)).toString();
         console.log(`${this.name} received ${money}$. Balance: ${this.money}$`);
     }
 

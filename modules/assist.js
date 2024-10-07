@@ -1,4 +1,4 @@
-// assist.js
+import models from './models/models_saving.js'
 
 export const Validators = {
     checkCorrectTime(hours, minutes){
@@ -17,14 +17,6 @@ export const Validators = {
     }
 }
 
-export const Serializers = {
-    timeSerializer(worktime){
-        start = worktime['start'].split(':')
-        end = worktime['end'].split(':')
-        //TODO: finish when enshure in type of response
-    }
-}
-
 export const Querying = {
     async queryAll(model, db) {
         return db.any(`SELECT * FROM ${model.name}`);
@@ -38,6 +30,11 @@ export const Querying = {
         try{
             let stmt = `insert into ${model.name} (${Object.keys(data).join(", ")}) values (${Object.values(data).map(value => `'${value}'`).join(', ')}) returning id`
             const query = await db.any(stmt)
+            data['id'] = query[0]['id']
+            const instance = new model(data)
+            let model_list = models.get(model)
+            model_list.push(instance) 
+            models.set(model, model_list)
             return query
         }catch(e){
             console.log(`ERROR: ${e}`)
@@ -48,6 +45,8 @@ export const Querying = {
         try{
             let stmt = `delete from ${model.name} where id=${`'${data.id}'`} returning id`
             const query = await db.any(stmt)
+            let new_model_list = models.get(model).filter(inst => inst.id == `'${data.id}'`)
+            models.set(model, new_model_list)        
             return query
         }catch(e){
             console.log(`ERROR: ${e}`)
@@ -63,9 +62,14 @@ export const Querying = {
                 }
             }
             let stmt = `update ${model.name} set ${params.join(", ")} where id=${`'${data.id}'`} returning id`
-            await db.any(stmt)
-            return await this.querySingle(model, db, data.id)
+            const new_index = models.get(model).findIndex(inst => inst.id == `'${data.id}'`);
+            let model_list = models.get(model)
             
+            model_list.splice(new_index, 1, new model(data))
+
+            models.set(model, model_list)
+            await db.any(stmt)
+            return await this.querySingle(model, db, data.id)       
         }catch(e){
             console.log(`ERROR: ${e}`)
         } 

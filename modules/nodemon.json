@@ -2,4 +2,4 @@
     "watch": ["./**/*"],
     "verbose": true,
     "ignore": ["**/node_modules/**", "**/dist/**", "**/build/**"]
-  }
+}

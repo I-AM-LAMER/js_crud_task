@@ -7,6 +7,14 @@ import classmateRouter from './ClassmateRouter.js';
 import productRouter from './ProductRouter.js';
 import cafeteriaRouter from './CafeteriaRouter.js';
 import db from '../main.js';
+import { createEndpoint } from './BaseEndpoints.js';
+import models from '../models/models_saving.js';
+
+function findModelByName(model_name){
+  const foundEntry = Array.from(models.entries()).find(([model, list]) => model.name === model_name);
+  const foundModel = foundEntry ? foundEntry[0] : null;
+  return foundModel
+}
 
 const router = express.Router();
 
@@ -19,8 +27,28 @@ router.route('/').get( async (req, res) => {
       cafeterias,
       products,
       title: 'Classmate Cafe Management System',
-      message: 'Welcome to our management system!'
+      message: 'Welcome to our management system!',
     });
+});
+
+router.route('/create').get( async (req, res) => {
+  const model = req.query.model
+  const model_class = findModelByName(model)
+
+  let instance = new model_class()
+  res.render('../views/templates/create.ejs', {
+    instance
+  });
+});
+
+router.route('/edit').get( async (req, res) => {
+  const model = req.query.model
+  const id = req.query.id
+
+  let instance = models.get(findModelByName(model)).find(inst => inst.id == id)
+  res.render('../views/templates/edit.ejs', {
+    instance
+  });
 });
 
 router.use('/cafeterias', cafeteriaRouter);

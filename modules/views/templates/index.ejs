@@ -6,6 +6,35 @@
     <title>Classmate Cafe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function deleteRecord(id, model)
+        {
+            fetch(`${model}/delete/`, 
+            { 
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id })
+
+            })
+            .then(response => {
+                response.json()
+                document.location.reload();
+            })
+            .catch(error => {
+                alert('Ошибка при удалении:', error);
+            });
+        }
+        function redirectToEdit(params) {
+            const queryString = new URLSearchParams(params).toString();
+            window.location.href = `/edit?${queryString}`;
+        }
+        function redirectToCreate(params) {
+            const queryString = new URLSearchParams(params).toString();
+            window.location.href = `/create?${queryString}`;
+        }
+    </script>
 </head>
 <body>
     <div class="container mt-5">
@@ -18,7 +47,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Class</th>
+                    <th>Money</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -27,13 +56,16 @@
                     <tr>
                         <td><%= classmate.id %></td>
                         <td><%= classmate.name %></td>
-                        <td><%= classmate.class %></td>
+                        <td><%= classmate.money %></td>
                         <td>
-                            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
-                            <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                            <button class="btn btn-sm btn-primary edit-btn" onclick="redirectToEdit({'model': 'classmate', 'id': '<%= classmate.id %>'})">Edit</button>
+                            <button class="btn btn-sm btn-danger delete-btn" onclick="deleteRecord('<%= classmate.id %>', 'classmates')">Delete</button>
                         </td>
                     </tr>
                 <% }); %>
+                <td>
+                    <button class="btn btn-sm btn-primary create-btn" onclick="redirectToCreate({'model': 'classmate'})">Create</button>
+                </td>
             </tbody>
         </table>
 
@@ -54,14 +86,17 @@
                     <tr>
                         <td><%= cafe.id %></td>
                         <td><%= cafe.name %></td>
-                        <td><%= cafe.openingTime %></td>
-                        <td><%= cafe.closingTime %></td>
+                        <td><%= cafe.opening_time %></td>
+                        <td><%= cafe.closing_time %></td>
                         <td>
-                            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
-                            <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                            <button class="btn btn-sm btn-primary edit-btn" onclick="redirectToEdit({'model': 'cafeteria', 'id': '<%= cafe.id %>'})">Edit</button>
+                            <button class="btn btn-sm btn-danger delete-btn" onclick="deleteRecord('<%= cafe.id %>', 'cafeterias')">Delete</button>
                         </td>
                     </tr>
                 <% }); %>
+                <td>
+                    <button class="btn btn-sm btn-primary create-btn" onclick="redirectToCreate({'model': 'cafeteria'})">Create</button>
+                </td>
             </tbody>
         </table>
 
@@ -72,7 +107,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Quantity</th>
+                    <th>Price</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -81,13 +116,16 @@
                     <tr>
                         <td><%= product.id %></td>
                         <td><%= product.name %></td>
-                        <td><%= product.quantity %></td>
+                        <td><%= product.price %></td>
                         <td>
-                            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
-                            <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                            <button class="btn btn-sm btn-primary edit-btn" onclick="redirectToEdit({'model': 'product', 'id': '<%= product.id %>'})">Edit</button>
+                            <button class="btn btn-sm btn-danger delete-btn" onclick="deleteRecord('<%= product.id %>', 'products')">Delete</button>
                         </td>
                     </tr>
                 <% }); %>
+                <td>
+                    <button class="btn btn-sm btn-primary create-btn" onclick="redirectToCreate({'model': 'product'})">Create</button>
+                </td>
             </tbody>
         </table>
     </div>
