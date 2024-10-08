@@ -9,6 +9,7 @@ import cafeteriaRouter from './CafeteriaRouter.js';
 import db from '../main.js';
 import { createEndpoint } from './BaseEndpoints.js';
 import models from '../models/models_saving.js';
+import AuthRouter from './authentification.js';
 
 function findModelByName(model_name){
   const foundEntry = Array.from(models.entries()).find(([model, list]) => model.name === model_name);
@@ -51,6 +52,7 @@ router.route('/edit').get( async (req, res) => {
   });
 });
 
+router.use('/auth', AuthRouter);
 router.use('/cafeterias', cafeteriaRouter);
 router.use('/classmates', classmateRouter);
 router.use('/products', productRouter);

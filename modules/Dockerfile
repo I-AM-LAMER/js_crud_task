@@ -4,7 +4,7 @@ WORKDIR /modules
 
 COPY package.json .
 
-RUN npm install express pg-promise cors dotenv ejs nodemon
+RUN npm install express pg-promise cors dotenv ejs nodemon bcrypt
 
 COPY . .
 

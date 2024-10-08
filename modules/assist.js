@@ -19,11 +19,27 @@ export const Validators = {
 
 export const Querying = {
     async queryAll(model, db) {
-        return db.any(`SELECT * FROM ${model.name}`);
+        return await db.any(`SELECT * FROM ${model.name}`);
+    },
+
+    async checkForUser(username, db){
+        const stmt = `select * from users where username='${username}'`
+        return await db.oneOrNone(stmt)
+    },
+
+    async queryCheck(model_name, data, db){
+        let params = [];
+        for (let key of Object.keys(data)){
+            if (data[key] != "id"){
+                params.push(`${key}='${data[key]}'`)
+            }
+        }
+        const stmt = `select * from ${model_name} where ${params.join(" and ")}`
+        return await db.oneOrNone(stmt)
     },
 
     async querySingle(model, db, id){
-        return db.any(`SELECT * FROM ${model.name} where id=${`'${id}'`}`)
+        return await db.any(`SELECT * FROM ${model.name} where id=${`'${id}'`}`)
     },
 
     async create(model, data, db){
@@ -39,6 +55,13 @@ export const Querying = {
         }catch(e){
             console.log(`ERROR: ${e}`)
         } 
+    },
+
+    async createUser(data, db){
+        data['password'] = data['password']
+
+        let stmt = `insert into users (${Object.keys(data).join(", ")}) values (${Object.values(data).map(value => `'${value}'`).join(', ')}) returning id`
+        return await db.any(stmt)
     },
 
     async delete(model, data, db){
